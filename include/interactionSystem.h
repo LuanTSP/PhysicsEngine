@@ -9,6 +9,8 @@ class InteractionSystem {
         
     private:
     void handleMouseLeftClick(ParticleManager& particleManager);
+    void handleMouseMiddleClick(ParticleManager& particleManager);
+    void handleMouseRightClick(ParticleManager& particleManager);
     
     public:
     InteractionSystem();

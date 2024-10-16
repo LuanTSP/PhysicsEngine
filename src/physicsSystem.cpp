@@ -4,10 +4,11 @@
 #include <cstdlib>
 #include <raylib.h>
 #include <raymath.h>
-#include <vector>
 #include "../include/config.h"
 
-PhysicsSystem::PhysicsSystem() {}
+PhysicsSystem::PhysicsSystem() {
+    this->particlesAreSolid = false;
+}
 
 
 void PhysicsSystem::updatePosition(ParticleManager& particleManager) {
@@ -20,10 +21,13 @@ void PhysicsSystem::updatePosition(ParticleManager& particleManager) {
     }
 }
 
-void PhysicsSystem::addGravity(ParticleManager& particleManager) {
+void PhysicsSystem::addForces(ParticleManager& particleManager) {
     for (auto e:particleManager.all()) {
-        // y vel
-        e->vel.y = e->vel.y + GRAVITY * (1.0 / TARGET_FPS) * 100;
+        // Gravity
+        e->vel = Vector2Add(e->vel, Forces::gravity());
+
+        // Point Force
+        // e->vel = Vector2Add(e->vel, Forces::pointForce(e->pos));
     }
 }
 
@@ -53,9 +57,9 @@ void PhysicsSystem::addBorderCollisions(ParticleManager& particleManager) {
 }
 
 void PhysicsSystem::addSolidParticles(ParticleManager& particleManager) {
-    std::vector<Particle *> particles = particleManager.all();
-    for (auto e1:particles) {
-        for (auto e2: particles) {
+    this->particlesAreSolid = true;
+    for (auto e1:particleManager.all()) {
+        for (auto e2: particleManager.all()) {
             if (e1->id == e2->id) {
                 continue;
             }
@@ -81,6 +85,9 @@ void PhysicsSystem::addSolidParticles(ParticleManager& particleManager) {
 }
 
 void PhysicsSystem::addConservationOfMomentum(ParticleManager& particleManager) {
+    if (!this->particlesAreSolid) {
+        return ;
+    }
     for (auto e1:particleManager.all()) {
         for (auto e2: particleManager.all()) {
             if (e1->id <= e2->id) {
@@ -88,6 +95,7 @@ void PhysicsSystem::addConservationOfMomentum(ParticleManager& particleManager) 
             }
             
             if (CheckCollisionCircles(e1->pos, PARTICLE_RADIUS, e2->pos, PARTICLE_RADIUS)) {
+                // Conservation of momentum
                 Vector2 c12_diff = Vector2Subtract(e1->pos, e2->pos);
                 Vector2 v12_diff = Vector2Subtract(e1->vel, e2->vel);
                 float c12_diff_len = Vector2Length(c12_diff);
@@ -108,6 +116,6 @@ void PhysicsSystem::update(ParticleManager& particleManager) {
     this->addConservationOfMomentum(particleManager);
     this->addSolidParticles(particleManager);
     this->addBorderCollisions(particleManager);
-    // this->addGravity(particleManager);
+    this->addForces(particleManager);
     this->updatePosition(particleManager);
 }

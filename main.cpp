@@ -17,8 +17,15 @@ int main() {
     RenderingSystem renderingSystem = RenderingSystem();
     InteractionSystem interactionSystem = InteractionSystem();
 
+    particleManager.createParticle({100, 200}, {0, 0});
+    particleManager.createParticle({300, 200}, {0, 0});
+    particleManager.createParticle({400, 300}, {0, 0});
+    particleManager.createParticle({100, 300}, {0, 0});
+    particleManager.createParticle({100, 400}, {0, 0});
+    particleManager.createParticle({300, 100}, {0, 0});
+
+
     // Game Loop
-    float max = 0;
     while(!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground((Color){0,0,0,255});
@@ -30,14 +37,6 @@ int main() {
         }
         renderingSystem.update(particleManager);
         interactionSystem.update(particleManager);
-
-        if (max < 200) {
-            particleManager.createParticle({400, 200}, {-100 , -100});
-            particleManager.createParticle({401, 200}, {-100 , 100});
-            particleManager.createParticle({402, 200}, {100 , -100});
-            particleManager.createParticle({403, 200}, {100 , 100});
-            max++;
-        }
 
         EndDrawing();
     }

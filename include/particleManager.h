@@ -5,7 +5,6 @@
 #include <string>
 #include <iostream>
 
-
 class Particle {
     public:
     int id;
@@ -20,6 +19,7 @@ class Particle {
 
 
 class ParticleManager {
+    public:
     int current_id;
     int count;
     std::vector<Particle*> entities;

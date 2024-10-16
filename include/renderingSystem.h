@@ -1,7 +1,11 @@
 #pragma once
-#include "../include/particleManager.h"
+#include "particleManager.h"
+#include "config.h"
 
 class RenderingSystem {
+    void renderParticles(ParticleManager& particleManager);
+    void renderSystemInfo(ParticleManager& particleManager);
+    
     public:
     RenderingSystem();
     void update(ParticleManager& particleManager);
