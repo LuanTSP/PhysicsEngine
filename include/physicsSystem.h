@@ -8,16 +8,11 @@
 
 class Forces {
     public:
-    static Vector2 gravity() {
-        return (Vector2) {0, GRAVITY * 100 * (1.0 / TARGET_FPS)};
-    }
-
-    static Vector2 pointForce(Vector2 pos) {
-        Vector2 centerPos = GetMousePosition();
-        float distance = Vector2Distance(pos, centerPos);
-        Vector2 direction = Vector2Normalize(Vector2Subtract(centerPos, pos));
-        return Vector2Scale(direction, 2 * GRAVITY * 100 * (1.0 / TARGET_FPS));
-    }
+    static Vector2 gravityDown(float acc);
+    static Vector2 gravityUp(float acc);
+    static Vector2 gravityRight(float acc);
+    static Vector2 gravityLeft(float acc);
+    static Vector2 pointForce(Vector2 pos, float acc);
 };
 
 class PhysicsSystem {

@@ -6,6 +6,43 @@
 #include <raymath.h>
 #include "../include/config.h"
 
+Vector2 Forces::gravityDown(float acc) {
+    Vector2 gravity = {0, acc / TARGET_FPS};
+    return gravity;
+}
+
+Vector2 Forces::gravityUp(float acc) {
+    Vector2 gravity = {0, -acc / TARGET_FPS};
+    return gravity;
+}
+
+Vector2 Forces::gravityRight(float acc) {
+    Vector2 gravity = {acc / TARGET_FPS, 0};
+    return gravity;
+}
+
+Vector2 Forces::gravityLeft(float acc) {
+    Vector2 gravity = {-acc / TARGET_FPS, 0};
+    return gravity;
+}
+
+void PhysicsSystem::addForces(ParticleManager& particleManager) {
+    for (auto e:particleManager.all()) {
+        // e->vel = Vector2Add(e->vel, Forces::gravityDown(9.8 * 100));
+        e->vel = Vector2Add(e->vel, Forces::gravityUp(9.8 * 100));
+        // e->vel = Vector2Add(e->vel, Forces::gravityRight(9.8 * 100));
+        e->vel = Vector2Add(e->vel, Forces::gravityLeft(9.8 * 100));
+    }
+}
+
+Vector2 Forces::pointForce(Vector2 pos, float acc) {
+    Vector2 centerPos = GetMousePosition();
+    float distance = Vector2Distance(pos, centerPos);
+    Vector2 direction = Vector2Normalize(Vector2Subtract(centerPos, pos));
+    return Vector2Scale(direction, acc / TARGET_FPS);
+}
+
+
 PhysicsSystem::PhysicsSystem() {
     this->particlesAreSolid = false;
 }
@@ -21,15 +58,6 @@ void PhysicsSystem::updatePosition(ParticleManager& particleManager) {
     }
 }
 
-void PhysicsSystem::addForces(ParticleManager& particleManager) {
-    for (auto e:particleManager.all()) {
-        // Gravity
-        e->vel = Vector2Add(e->vel, Forces::gravity());
-
-        // Point Force
-        // e->vel = Vector2Add(e->vel, Forces::pointForce(e->pos));
-    }
-}
 
 void PhysicsSystem::addBorderCollisions(ParticleManager& particleManager) {
     for (auto e:particleManager.all()) {
